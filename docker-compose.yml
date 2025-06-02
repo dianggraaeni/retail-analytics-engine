@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.2 # Versi spesifik
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:7.3.2 # Versi spesifik
+    container_name: kafka
+    ports:
+      - "9092:9092" # Untuk akses dari host (Python scripts, dll)
+      - "29092:29092" # Untuk akses dari dalam Docker network (misal oleh Spark jika streaming)
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      # Listener untuk internal Docker network
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0 # Mempercepat rebalance untuk development
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true" # Berguna untuk development
+
+  spark-master:
+    image: bitnami/spark:3.5.0 # Versi spesifik Spark (sesuaikan jika perlu, pastikan cocok dengan PySpark Anda)
+    container_name: spark-master
+    user: root
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+      # Alokasi memori untuk proses daemon Spark Master itu sendiri
+      # Termasuk Driver jika spark-submit dijalankan dalam mode client di master
+      # Sesuaikan nilai ini berdasarkan total RAM yang Anda berikan ke Docker Desktop
+      # Contoh: Jika Docker Desktop punya 8GB, Anda bisa coba 4g-6g di sini
+      # Ini adalah batas atas untuk JVM Spark Master, bukan hanya heap.
+      - SPARK_DAEMON_MEMORY=4g
+      # Opsi tambahan untuk JVM driver jika dijalankan di master
+      # - SPARK_DRIVER_MEMORY=3g # Bisa juga di-override dengan --driver-memory di spark-submit
+      # - SPARK_DRIVER_JAVA_OPTS=-XX:+UseG1GC # Contoh
+    ports:
+      - "8080:8080" # Spark Master Web UI
+      - "7077:7077" # Spark Master RPC
+      - "4040-4050:4040-4050" # Port untuk Spark UI dari aplikasi yang berjalan
+    volumes:
+      - ./config:/tmp/app/config
+      - ./spark:/tmp/app/spark
+      - ./data:/tmp/app/data
+      # Pertimbangkan untuk mount log Spark agar persisten
+      # - ./logs/spark_master:/opt/bitnami/spark/logs 
+
+  spark-worker:
+    image: bitnami/spark:3.5.0 # Versi spesifik yang SAMA dengan master
+    container_name: spark-worker-1 # Beri nama unik jika Anda punya banyak worker
+    user: root
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      # Total memori yang bisa digunakan oleh proses worker Spark
+      # Sesuaikan berdasarkan total RAM Docker Desktop dan jumlah worker
+      # Jika hanya 1 worker, ini bisa lebih besar.
+      - SPARK_WORKER_MEMORY=4g
+      - SPARK_WORKER_CORES=2 # Jumlah core yang bisa digunakan worker
+      # Opsi tambahan untuk JVM executor di worker
+      # - SPARK_EXECUTOR_MEMORY=3g # Bisa di-override dengan --executor-memory di spark-submit
+      # - SPARK_EXECUTOR_JAVA_OPTS=-XX:+UseG1GC # Contoh
+    depends_on:
+      - spark-master
+    volumes:
+      - ./config:/tmp/app/config # Worker mungkin tidak perlu akses config jika driver yang handle
+      - ./spark:/tmp/app/spark   # Worker perlu akses ke skrip jika driver mengirimkan path
+      - ./data:/tmp/app/data     # Worker perlu akses ke data jika membaca langsung
+      # Pertimbangkan untuk mount log Spark agar persisten
+      # - ./logs/spark_worker_1:/opt/bitnami/spark/logs
