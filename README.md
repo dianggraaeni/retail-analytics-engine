@@ -25,7 +25,7 @@ graph TD
     end
     subgraph "Batch Processing (Python)"
         D((Kafka Consumer))
-        E[Batch Files (.csv)]
+        E[Batch Files CSV]
     end
     subgraph "Model Training (Apache Spark)"
         F[Spark ML Training Jobs]
@@ -35,17 +35,16 @@ graph TD
         H{REST API (Flask)}
         I[Client/Postman]
     end
-    
-    %% Mendefinisikan Alur (Panah) Antar Komponen
-    A --> B;
-    B -- Stream per baris --> C;
-    C --> D;
-    D -- Simpan per batch --> E;
-    E --> F;
-    F -- Latih 3 jenis model --> G;
-    G --> H;
-    I -- HTTP Request --> H;
-    H -- Prediksi (JSON) --> I;
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    F --> G
+    G --> H
+    I --> H
+    H --> I
 ```
 
 ---
