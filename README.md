@@ -2,7 +2,7 @@
 |            --                |     --     |
 | Riakiyatul Nur Oktarani      | 5027231013 |
 | Dian Anggraeni Putri         | 5027231016 |
-| Acintya Edria Sudarson       | 5027231020 |
+| Acintya Edria Sudarsono      | 5027231020 |
 
 # Retail Analytics Engine: Sistem Big Data dengan Kafka, Spark, dan REST API
 
@@ -20,22 +20,32 @@ graph TD
         A[1. Dataset CSV]
     end
     subgraph "Data Ingestion (Kafka)"
-        A --> B((Kafka Producer));
-        B -- Stream per baris --> C{Kafka Topic: retail_data_stream};
+        B((Kafka Producer))
+        C{Kafka Topic: retail_data_stream}
     end
     subgraph "Batch Processing (Python)"
-        C --> D((Kafka Consumer));
-        D -- Simpan per batch --> E[Batch Files (.csv)];
+        D((Kafka Consumer))
+        E[Batch Files (.csv)]
     end
     subgraph "Model Training (Apache Spark)"
-        E --> F[Spark ML Training Jobs];
-        F -- Latih 3 jenis model --> G[(Trained Models)];
+        F[Spark ML Training Jobs]
+        G[(Trained Models)]
     end
     subgraph "Serving Layer (API)"
-        G --> H{<fa:fa-server> REST API (Flask)};
-        I[Client/Postman] -- HTTP Request --> H;
-        H -- Prediksi (JSON) --> I;
+        H{REST API (Flask)}
+        I[Client/Postman]
     end
+    
+    %% Mendefinisikan Alur (Panah) Antar Komponen
+    A --> B;
+    B -- Stream per baris --> C;
+    C --> D;
+    D -- Simpan per batch --> E;
+    E --> F;
+    F -- Latih 3 jenis model --> G;
+    G --> H;
+    I -- HTTP Request --> H;
+    H -- Prediksi (JSON) --> I;
 ```
 
 ---
