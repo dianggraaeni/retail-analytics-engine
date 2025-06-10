@@ -19,18 +19,22 @@ graph TD
     subgraph "Data Source"
         A[1. Dataset CSV]
     end
+
     subgraph "Data Ingestion (Kafka)"
         B((Kafka Producer))
         C{Kafka Topic: retail_data_stream}
     end
+
     subgraph "Batch Processing (Python)"
         D((Kafka Consumer))
-        E[Batch Files CSV]
+        E[Batch Files (.csv)]
     end
+
     subgraph "Model Training (Apache Spark)"
         F[Spark ML Training Jobs]
         G[(Trained Models)]
     end
+
     subgraph "Serving Layer (API)"
         H{REST API (Flask)}
         I[Client / Postman]
@@ -45,6 +49,7 @@ graph TD
     G --> H
     I --> H
     H --> I
+
 ```
 
 ---
