@@ -86,7 +86,6 @@ retail-analytics-engine/
 │   └── requirements.txt
 │
 └── logs/                          # Log yang dihasilkan sistem (tidak termasuk dalam Git)
-    ├── spark_jobs_from_consumer/  # Log spesifik dari setiap job Spark
     └── ...
 ```
 
