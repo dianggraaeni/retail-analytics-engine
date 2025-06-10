@@ -1,9 +1,8 @@
-```markdown
 |           Nama               |     NRP    |
 |            --                |     --     |
+| Riakiyatul Nur Oktarani      | 5027231013 |
 | Dian Anggraeni Putri         | 5027231016 |
-| Fadhillah Cantika Sari H.    | 5027231042 |
-| Callista Meyra Azizah        | 5027231060 |
+| Acintya Edria Sudarson       | 5027231020 |
 
 # Retail Analytics Engine: Sistem Big Data dengan Kafka, Spark, dan REST API
 
@@ -187,4 +186,3 @@ python test_api.py
 
 ![Hasil Testing API](https://github.com/user-attachments/assets/6af8166f-d645-4bf9-ba26-864748c5e684)
 
-```
