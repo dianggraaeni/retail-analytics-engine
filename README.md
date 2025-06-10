@@ -33,7 +33,7 @@ graph TD
     end
     subgraph "Serving Layer (API)"
         H{REST API (Flask)}
-        I[Client/Postman]
+        I[Client / Postman]
     end
 
     A --> B
