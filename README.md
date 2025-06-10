@@ -27,7 +27,7 @@ graph TD
 
     subgraph "Batch Processing (Python)"
         D((Kafka Consumer))
-        E[Batch Files (.csv)]
+        E["Batch Files (.csv)"]
     end
 
     subgraph "Model Training (Apache Spark)"
