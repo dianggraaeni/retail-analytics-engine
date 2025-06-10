@@ -14,42 +14,41 @@ Sistem ini mensimulasikan arsitektur pemrosesan data stream secara real-time men
 
 Sistem ini terdiri dari beberapa komponen utama yang bekerja secara berurutan untuk mengubah data mentah menjadi insight yang dapat diakses.
 
-```mermaid
-graph TD
-    subgraph "Data Source"
-        A[1. Dataset CSV]
-    end
-
-    subgraph "Data Ingestion (Kafka)"
-        B((Kafka Producer))
-        C{Kafka Topic: retail_data_stream}
-    end
-
-    subgraph "Batch Processing (Python)"
-        D((Kafka Consumer))
-        E["Batch Files (.csv)"]
-    end
-
-    subgraph "Model Training (Apache Spark)"
-        F[Spark ML Training Jobs]
-        G[(Trained Models)]
-    end
-
-    subgraph "Serving Layer (API)"
-        H{REST API (Flask)}
-        I[Client / Postman]
-    end
-
-    A --> B
-    B --> C
-    C --> D
-    D --> E
-    E --> F
-    F --> G
-    G --> H
-    I --> H
-    H --> I
-
+```
++-------------------+       +--------------------+       +------------------------+
+| 1. Dataset CSV    |  -->  | Kafka Producer     |  -->  | Kafka Topic:           |
+|                   |       |                    |       | retail_data_stream     |
++-------------------+       +--------------------+       +------------------------+
+                                                               |
+                                                               v
+                                                      +--------------------+
+                                                      | Kafka Consumer     |
+                                                      +--------------------+
+                                                               |
+                                                               v
+                                                      +--------------------+
+                                                      | Batch Files (.csv) |
+                                                      +--------------------+
+                                                               |
+                                                               v
+                                                      +---------------------------+
+                                                      | Spark ML Training Jobs    |
+                                                      +---------------------------+
+                                                               |
+                                                               v
+                                                      +--------------------+
+                                                      | Trained Models     |
+                                                      +--------------------+
+                                                               |
+                                                               v
+                                                      +--------------------+
+                                                      | REST API (Flask)   |
+                                                      +--------------------+
+                                                               ^
+                                                               |
+                                                      +--------------------+
+                                                      | Client / Postman   |
+                                                      +--------------------+
 ```
 
 ---
