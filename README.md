@@ -190,11 +190,75 @@ curl -X POST http://localhost:5000/predict/total_amount/v3 \
 
 ## 6. Testing
 
-Untuk menjalankan pengujian otomatis pada semua endpoint API, gunakan skrip `test_api.py`.
+Untuk menjalankan pengujian otomatis pada semua endpoint API, sebelum menggunakan skrip `test_api.py`, jalankan terlebih dahulu `api/app.py`.
+
+```bash
+python api/app.py
+```
 
 ```bash
 python test_api.py
 ```
 
-![Hasil Testing API](https://github.com/user-attachments/assets/6af8166f-d645-4bf9-ba26-864748c5e684)
+![hasil testing api](https://github.com/user-attachments/assets/eb721658-42b4-4ea3-895f-f5b1193ae792)
 
+**Model 1 : Linear Regression**
+```bash
+curl -X POST http://localhost:5000/predict/total_amount/v1 \
+-H "Content-Type: application/json" \
+-d '{
+    "quantity": 5,
+    "price": 15.50,
+    "month": 12,
+    "day": 15,
+    "hour": 14
+}
+```
+
+![Linear Regression v1](https://github.com/user-attachments/assets/5092edac-5b1b-4248-bcb1-d96a5ebcd5ed)
+
+![Linear Regression v2](https://github.com/user-attachments/assets/4177b93c-fdc2-4d00-92f0-a52716294a37)
+
+![Linear Regression v3](https://github.com/user-attachments/assets/7fdea6f7-9a55-4206-891d-1f3f032784cf)
+
+
+**Model 2 : Random Forest**
+```bash
+curl -X POST http://localhost:5000/predict/quantity_category/v1 \
+-H "Content-Type: application/json" \
+-d '{
+    "quantity": 8,
+    "price": 12.75,
+    "total_amount": 102.0,
+    "month": 11,
+    "day": 20,
+    "hour": 15
+}
+```
+
+![Random Forest v1](https://github.com/user-attachments/assets/dc9902b2-e402-4bc2-ab86-232378c29b47)
+
+![Random Forest v2](https://github.com/user-attachments/assets/467fe3b2-9dad-46bd-bf31-a9f592905e51)
+
+![Random Forest v3](https://github.com/user-attachments/assets/0e94e0aa-c9db-4270-bab6-041bbbb7d0d4)
+
+
+**Model 3 : logistic regression**
+```bash
+curl -X POST http://localhost:5000/predict/high_value_customer/v1 \
+-H "Content-Type: application/json" \
+-d '{
+    "quantity": 3,
+    "price": 25.00,
+    "total_amount": 75.0,
+    "month": 12,
+    "day": 10,
+    "hour": 16
+}
+```
+
+![logistic regression v1](https://github.com/user-attachments/assets/47295756-739d-4018-ad2f-c5273ce034e0)
+
+![logistic regression v2](https://github.com/user-attachments/assets/25725286-988b-416b-8101-70ee09df2b69)
+
+![logistic regression v3](https://github.com/user-attachments/assets/fb58abf2-09ff-498b-9b12-3c8ada740fa4)
